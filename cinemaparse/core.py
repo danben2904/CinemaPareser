@@ -63,3 +63,20 @@ class CinemaParser:
                                 kino = now_kino
                 return (kino, time)
         return (None, None)
+    def get_soonest_session(self):
+        '''Get soonest session'''
+        time = 'zzzz'
+        kino = None
+        film = None
+        new_url = self.url + "/movies"
+        page = requests.get(new_url)
+        soup = bs(page.text, 'html.parser')
+        all_films = soup.find_all("div", class_="movie-plate")
+        print(new_url)
+        for flm in all_films:
+            now = self.get_film_nearest_session(flm['attr-title'])
+            if now[1] < time:
+                time = now[1]
+                kino = now[0]
+                film = flm['attr-title']
+        return (kino, film, time)
